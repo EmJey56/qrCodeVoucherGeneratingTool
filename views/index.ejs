@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+
+    <style>
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        
+        #searchBox {
+            display: block;
+            margin: 20px auto;
+            padding: 10px;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+       
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .popup-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgb(255, 242, 0);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .popup-container .close-btn {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            font-size: 16px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+        .voucher-preview {
+            text-align: center;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+            color: #aaa;
+        }
+
+    </style>
+
+    <script>
+        // voucher popup
+        function showVoucherDetails(voucher) {
+            document.getElementById('voucherTitle').innerText = voucher.title;
+            document.getElementById('voucherNumber').innerText = `Voucher Number: ${voucher.voucherNumber}`;
+            document.getElementById('generatedDate').innerText = `Generated Date: ${voucher.generatedDate}`;
+            document.getElementById('expiryDate').innerText = `Expiry Date: ${voucher.expiryDate}`;
+            document.getElementById('voucherQR').src = voucher.qrCodeUrl;
+
+            document.getElementById('popup').style.display = 'block';
+        }
+
+       
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+
+        function filterTable() {
+            const searchInput = document.getElementById('searchBox').value.toLowerCase();
+            const tableRows = document.querySelectorAll('tbody tr');
+
+            tableRows.forEach(row => {
+                const rowText = row.innerText.toLowerCase();
+                if (rowText.includes(searchInput)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Welcome, <%= username %></h1>
+
+        <% if (successMessage) { %>
+            <script type="text/javascript">
+                alert("<%= successMessage %>");
+            </script>
+        <% } %>
+
+        <p style="text-align: center;">Here are your vouchers:</p>
+
+        <input
+            type="text"
+            id="searchBox"
+            placeholder="Search by title, number, or date"
+            oninput="filterTable()"
+        />
+
+        <div id="popup" class="popup-container">
+            <button class="close-btn" onclick="closePopup()">×</button>
+            <div class="voucher-preview">
+                <h2 id="voucherTitle">Voucher Title</h2>
+                <p id="voucherNumber">Voucher Number: </p>
+                <p id="generatedDate">Generated Date: </p>
+                <p id="expiryDate">Expiry Date: </p>
+                <img id="voucherQR" src="" alt="QR Code" width="80">
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>SL No</th>
+                    <th>Title</th>
+                    <th>Voucher Number</th>
+                    <th>Generated Date</th>
+                    <th>Expiry Date</th>
+                    <th>QR Code</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (vouchers.length > 0) { %>
+                    <% vouchers.forEach(function(voucher, index) { %>
+                        <tr onclick='showVoucherDetails(<%= JSON.stringify(voucher) %>)'>
+                            <td><%= index + 1 %></td>
+                            <td><%= voucher.title %></td>
+                            <td><%= voucher.voucherNumber %></td>
+                            <td><%= voucher.generatedDate %></td>
+                            <td><%= voucher.expiryDate %></td>
+                            <td>
+                                <% if (voucher.qrCodeUrl) { %>
+                                    <img src="<%= voucher.qrCodeUrl %>" alt="QR Code" width="50">
+                                <% } else { %>
+                                    No QR Code
+                                <% } %>
+                            </td>
+                            <td>
+                                <a href="/generatePDF/<%= voucher.voucherNumber %>">Download PDF</a>
+                                <form action="/deleteVoucher/<%= voucher.voucherNumber %>" method="POST" style="display:inline;">
+                                    <button type="submit">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="7">No vouchers available</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+
+        <form action="/generateQR" method="POST" style="text-align: center;">
+            <button type="submit">Generate New Voucher</button>
+        </form>
+
+        <a href="/settings" style="display: block; text-align: center;">Settings</a>
+
+        <br><br>
+
+        <form action="/logout" method="POST" style="text-align: center;">
+            <button type="submit">Logout</button>
+        </form>
+
+        <footer>
+            <p>&copy; 2025 QR Voucher Portal. All rights reserved.</p>
+        </footer>
+    </div>
+
+</body>
+</html>

@@ -23,11 +23,11 @@ app.set("views", path.join(__dirname, "views"));
 
 
 const dbConfig = {
-  server: "LAPTOP-3L3HS8MB\\SQLEXPRESS", // Use your instance name
-  port: 1433,
-  database: "Vouchers",
-  user: "sa", // Your SQL Server username
-  password: "123456", // Your SQL Server password
+  server: "", // Use your instance name
+  port: ,
+  database: "",
+  user: "", // Your SQL Server username
+  password: "", // Your SQL Server password
   options: {
     encrypt: false, // Disable encryption
     trustServerCertificate: true, // Trust the server certificate

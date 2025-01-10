@@ -1,3 +1,9 @@
+"I developed this tool as part of a task provided by Auxwall Software 
+Solutions to assess my suitability for the role, ensuring all specified 
+requirements were fulfilled. Thankyou!"
+
+-----------------------------------------
+Backend :-
 step 1 = npm install
 
 step 2 = setup db(SQL Server)
@@ -16,8 +22,8 @@ use this query code in db to create table.
 step 3 = add ure username and pass etc..
 
 ---------------------------------------------
-
-Authentication for the frontend
+Frontend:-
+Authentication
 
 username = admin
 password = admin
